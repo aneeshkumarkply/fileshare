@@ -2,8 +2,8 @@
 <p align="center"> <img style="border-radius:20px" src="fileshare.png" width="400px"></p>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000" />
-  <a href="https://twitter.com/AbhilashHegde9" target="_blank">
-    <img alt="Twitter: AbhilashHegde9" src="https://img.shields.io/twitter/follow/AbhilashHegde9.svg?style=social" />
+  <a href="https://twitter.com/aneeshKumarkply" target="_blank">
+    <img alt="Twitter: aneeshKumarkply" src="https://img.shields.io/twitter/follow/aneeshKumarkply.svg?style=social" />
   </a>
   
   [![Github All Releases](https://img.shields.io/github/downloads/abhi16180/fileshare/total.svg)]()
@@ -91,9 +91,9 @@ flutter run
 
 ## Author
 
-👤 **Abhilash Hegde**
+👤 **Aneesh Kumar S**
 
-* Twitter: [@AbhilashHegde9](https://twitter.com/AbhilashHegde9)
+* Twitter: [@aneeshKumarkply](https://twitter.com/aneeshKumarkply)
 
 ## Show your support
 
@@ -101,7 +101,7 @@ Give a ⭐️ if this project helped you!
 <br>
 You can support me by,
 <br>
-<a href="https://www.buymeacoffee.com/abhi1.6180" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
+<a href="https://www.buymeacoffee.com/Aneesh Kumar S" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 
 ### Icon credits 
