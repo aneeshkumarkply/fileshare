@@ -6,10 +6,10 @@
     <img alt="Twitter: aneeshKumarkply" src="https://img.shields.io/twitter/follow/aneeshKumarkply.svg?style=social" />
   </a>
   
-  [![Github All Releases](https://img.shields.io/github/downloads/abhi16180/fileshare/total.svg)]()
-  [![Github Latest Release (all)](https://img.shields.io/github/downloads/abhi16180/fileshare/v1.1.0/total)]()
-  [![Commits/week](  https://img.shields.io/github/commit-activity/w/abhi16180/fileshare)]()
-  [![CodeFactor](https://www.codefactor.io/repository/github/abhi16180/fileshare/badge)](https://www.codefactor.io/repository/github/abhi16180/fileshare)
+  [![Github All Releases](https://img.shields.io/github/downloads/aneeshkumarkply/fileshare/total.svg)]()
+  [![Github Latest Release (all)](https://img.shields.io/github/downloads/aneeshkumarkply/fileshare/v1.1.0/total)]()
+  [![Commits/week](  https://img.shields.io/github/commit-activity/w/aneeshkumarkply/fileshare)]()
+  [![CodeFactor](https://www.codefactor.io/repository/github/aneeshkumarkply/fileshare/badge)](https://www.codefactor.io/repository/github/aneeshkumarkply/fileshare)
 </p>
 
 > File Share is a cross-platform file-transfer application built using flutter. It uses http to transfer files between devices.You can transfer files between devices that run File Share.(*No wifi router is required ,you can use  hotspot*)
@@ -29,7 +29,7 @@
 - **Transfer multiple files**<br>
   You can pick any number of files.
 - **Pick files faster**<br>
-  Most of the apps use <a href='https://github.com/miguelpruivo/flutter_file_picker'>file_picker</a> for picking the files. But for android it caches files before retrieving the paths. If the file size is large it will result in considerable amount of delay. So I have tweaked <a href='https://github.com/abhi16180/flutter_file_picker'>file_picker</a> to avoid caching(android) *unless it is required (some files need to be cached)*. No matter how many files are selected ,paths will be retrieved within no time.
+  Most of the apps use <a href='https://github.com/miguelpruivo/flutter_file_picker'>file_picker</a> for picking the files. But for android it caches files before retrieving the paths. If the file size is large it will result in considerable amount of delay. So I have tweaked <a href='https://github.com/aneeshkumarkply/flutter_file_picker'>file_picker</a> to avoid caching(android) *unless it is required (some files need to be cached)*. No matter how many files are selected ,paths will be retrieved within no time.
   (Note:Caching issue is android specific)
 - **Smooth UI**<br>
   Material You design.
@@ -60,19 +60,19 @@
 
 - Windows
 <br>
-<a title="Microsoft Corporation, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0&gt;, via Wikimedia Commons" href="https://github.com/abhi16180/fileshare/releases/download/v1.1.0/fileshare-windows-v1.1.0.exe"><img width="128" alt="Windows 10x Icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Windows_10x_Icon.png/512px-Windows_10x_Icon.png" width=128px></a>
+<a title="Microsoft Corporation, CC BY-SA 4.0 &lt;https://creativecommons.org/licenses/by-sa/4.0&gt;, via Wikimedia Commons" href="https://github.com/aneeshkumarkply/fileshare/releases/download/v1.1.0/fileshare-windows-v1.1.0.exe"><img width="128" alt="Windows 10x Icon" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Windows_10x_Icon.png/512px-Windows_10x_Icon.png" width=128px></a>
 <br>
 <br>
 - macOS
 <br>
-<a title="Apple Inc., Public domain, via Wikimedia Commons" href="https://github.com/abhi16180/fileshare/releases/download/v1.1.0/fileshare-macos-x86_64-v1.1.0.dmg"><img width="128" alt="Finder Icon macOS Big Sur" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Finder_Icon_macOS_Big_Sur.png/512px-Finder_Icon_macOS_Big_Sur.png" width=240px></a> 
+<a title="Apple Inc., Public domain, via Wikimedia Commons" href="https://github.com/aneeshkumarkply/fileshare/releases/download/v1.1.0/fileshare-macos-x86_64-v1.1.0.dmg"><img width="128" alt="Finder Icon macOS Big Sur" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Finder_Icon_macOS_Big_Sur.png/512px-Finder_Icon_macOS_Big_Sur.png" width=240px></a> 
 <br>
 <br>
 - Linux (appImage)
 <br>
-<a title="https://github.com/icons8/flat-color-icons/graphs/contributors, MIT &lt;http://opensource.org/licenses/mit-license.php&gt;, via Wikimedia Commons" href="https://github.com/abhi16180/fileshare/releases/download/v1.1.0/File Share-Linux-Bundle-v1.1.0.zip"><img width="128" alt="Icons8 flat linux" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Icons8_flat_linux.svg/512px-Icons8_flat_linux.svg.png" width=240px></a>
+<a title="https://github.com/icons8/flat-color-icons/graphs/contributors, MIT &lt;http://opensource.org/licenses/mit-license.php&gt;, via Wikimedia Commons" href="https://github.com/aneeshkumarkply/fileshare/releases/download/v1.1.0/File Share-Linux-Bundle-v1.1.0.zip"><img width="128" alt="Icons8 flat linux" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Icons8_flat_linux.svg/512px-Icons8_flat_linux.svg.png" width=240px></a>
 <br>
-<a href="https://github.com/abhi16180/fileshare/releases/">All releases</a><br>
+<a href="https://github.com/aneeshkumarkply/fileshare/releases/">All releases</a><br>
 
 
 ## To build app
