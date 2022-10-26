@@ -97,7 +97,7 @@ class _AppState extends State<App> {
                     }));
                   },
                 ),
-                ListTile(
+              /*  ListTile(
                   leading: SvgPicture.asset(
                     'assets/icons/licenses.svg',
                     color: Colors.white,
@@ -123,7 +123,7 @@ class _AppState extends State<App> {
                         mode: LaunchMode.externalApplication);
                   },
                   title: const Text('Privacy policy'),
-                ),
+                ),*/
                 ListTile(
                   title: const Text('About'),
                   leading: const Icon(UniconsLine.info_circle),

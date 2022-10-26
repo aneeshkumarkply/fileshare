@@ -34,22 +34,22 @@ class AboutPage extends StatelessWidget {
             ),
             onTap: () {
               var url = Mailto(
-                to: ['fileshare19dev@gmail.com'],
+                to: ['tripleafoodies@gmail.com'],
               ).toString();
               launchUrl(Uri.parse(url));
             },
             title: const Text('Email'),
-            subtitle: const Text('fileshare19dev@gmail.com'),
+            subtitle: const Text('tripleafoodies@gmail.com'),
           ),
           ListTile(
             leading: const Icon(UniconsLine.twitter, color: Colors.blueAccent),
             onTap: () {
-              launchUrl(Uri.parse('https://twitter.com/AbhilashHegde9'));
+              launchUrl(Uri.parse('https://twitter.com/aneeshkumaekply'));
             },
             title: const Text('Twitter'),
-            subtitle: const Text('https://twitter.com/AbhilashHegde9'),
+            subtitle: const Text('https://twitter.com/aneeshkumaekply'),
           ),
-          Padding(
+       /*   Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
               child: const Center(
@@ -67,7 +67,7 @@ class AboutPage extends StatelessWidget {
               'assets/icons/bmc-button.svg',
               width: MediaQuery.of(context).size.width / 2,
             ),
-          ),
+          ),*/
         ],
       ),
     );

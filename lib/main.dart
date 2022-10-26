@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
@@ -31,7 +32,12 @@ void main() async {
 
   // await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(
-    MaterialApp(
+  Shortcuts(
+  shortcuts: {
+  LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+  },
+
+   child: MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: FlexThemeData.light(
           scheme: FlexScheme.hippieBlue,
@@ -74,5 +80,6 @@ void main() async {
         '/history': (context) => const HistoryPage()
       },
     ),
+      )
   );
 }
