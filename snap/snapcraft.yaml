@@ -1,0 +1,28 @@
+name: file-share
+version: 0.1.0
+summary: File Share
+description: File Share Across every Platform
+
+confinement: strict
+base: core18
+grade: stable
+
+slots:
+  dbus-file-share: # adjust accordingly to your app name
+    interface: dbus
+    bus: session
+    name: com.tripleafoodies.fileshare # adjust accordingly to your app name and
+
+apps:
+  file-share:
+    command: fileshare
+    extensions: [flutter-master] # Where "master" defines which Flutter channel to use for the build
+    plugs:
+      - network
+    slots:
+      - dbus-file-share
+parts:
+  file-share:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart # The main entry-point file of the application
