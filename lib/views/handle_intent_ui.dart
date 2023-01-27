@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:fileshare/services/fileshare_sender.dart';
 import 'package:flutter/material.dart';
 import 'package:fileshare/methods/methods.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
@@ -17,7 +17,7 @@ class _HandleIntentUIState extends State<HandleIntentUI> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Share files"),
+        title: const Text("Share files"),
       ),
       body: FutureBuilder(
         future: ReceiveSharingIntent.getInitialMedia(),
@@ -56,7 +56,8 @@ class _HandleIntentUIState extends State<HandleIntentUI> {
                     sts(() {
                       isLoading = true;
                     });
-                    await handleSharing(context, externalIntent: true);
+                    await FileShareSender.handleSharing(context,
+                        externalIntent: true);
                     sts(() {
                       isLoading = false;
                     });

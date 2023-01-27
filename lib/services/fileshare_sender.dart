@@ -1,21 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fileshare/methods/methods.dart';
 import 'package:fileshare/models/file_model.dart';
 import 'package:fileshare/models/sender_model.dart';
+import 'package:fileshare/models/share_error_model.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-
+import 'package:hive/hive.dart';
 import '../components/dialogs.dart';
 import '../components/snackbar.dart';
 import 'file_services.dart';
 
-class PhotonSender {
+class FileShareSender {
   static late HttpServer _server;
-  static late String _address;
+  static String _address = '';
   static late List<String?> _fileList;
   static late int _randomSecretCode;
-
+  static late String fileshareLink;
+  static late Uint8List avatar;
   static getFilesPath() async {
     //flutter specific package
     _fileList = await FileMethods.pickFiles();
@@ -30,35 +33,65 @@ class PhotonSender {
     //todo handle exception when no ip available
     //todo add option to choose ip from list
     List<String> ip = await getIP();
-    _address = ip.first;
+    if (ip.isNotEmpty) _address = ip.first;
   }
 
-  static _startServer(List<String?> fileList, BuildContext context) async {
+  static handleSharing(BuildContext context,
+      {bool externalIntent = false}) async {
+    Map<String, dynamic> shareRespMap =
+    await FileShareSender.share(context, externalIntent: externalIntent);
+    ShareError shareErr = ShareError.fromMap(shareRespMap);
+
+    switch (shareErr.hasError) {
+      case true:
+        // ignore: use_build_context_synchronously
+        showSnackBar(context, '${shareErr.errorMessage}');
+        break;
+
+      case false:
+        // ignore: use_build_context_synchronously
+        Navigator.pushNamed(context, '/sharepage');
+        break;
+    }
+  }
+
+  static Future<Map<String, dynamic>> _startServer(
+      List<String?> fileList, context) async {
     //todo remove print statements
     late Map<String, Object> serverInf;
 
     //check if no proper address is assigned
 
     if (_address == '') {
-      return false;
+      return {
+        'hasErr': true,
+        'type': 'ip',
+        'errMsg': 'Please connect to wifi or turn on your mobile hotspot'
+      };
     }
     try {
       _server = await HttpServer.bind(_address, 4040);
-
       _randomSecretCode = getRandomNumber();
+      Box box = Hive.box('appData');
+      String username = box.get('username');
+      avatar =
+          (await rootBundle.load(box.get('avatarPath'))).buffer.asUint8List();
+
       serverInf = {
         'ip': _server.address.address,
         'port': _server.port,
-        'host': Platform.localHostname,
+        'host': username,
         'os': Platform.operatingSystem,
         'version': Platform.operatingSystemVersion,
         'files-count': _fileList.length,
+        'avatar': avatar
       };
     } catch (e) {
-      showSnackBar(context, e.toString());
-      return false;
+      return {'hasErr': true, 'type': 'server', 'errMsg': '$e'};
     }
+
     bool? allowRequest;
+    fileshareLink = 'http://$_address:4040/fileshare-server';
     _server.listen(
       (HttpRequest request) async {
         if (request.requestedUri.toString() ==
@@ -69,8 +102,11 @@ class PhotonSender {
             'http://$_address:4040/get-code') {
           String os = (request.headers['os']![0]);
           String username = request.headers['receiver-name']![0];
+
           allowRequest = await senderRequestDialog(context, username, os);
           if (allowRequest == true) {
+            //appending receiver data
+
             request.response.write(
                 jsonEncode({'code': _randomSecretCode, 'accepted': true}));
             request.response.close();
@@ -87,8 +123,27 @@ class PhotonSender {
         } else if (request.requestedUri.toString() ==
             'http://$_address:4040/favicon.ico') {
           request.response.close();
+        } else if (request.requestedUri.toString() ==
+            "http://$_address:4040/receiver-data") {
+          //process receiver data
+          processReceiversData({
+            "os": request.headers['os']!.first,
+            "hostName": request.headers['hostName']!.first,
+            'currentFileName':
+                int.parse(request.headers['currentFile']!.first) == 0
+                    ? ''
+                    : fileList[
+                            int.parse(request.headers['currentFile']!.first) -
+                                1]!
+                        .split(Platform.pathSeparator)
+                        .last,
+            "currentFileNumber": request.headers['currentFile']!.first,
+            "receiverID": request.headers['receiverID']!.first,
+            "filesCount": fileList.length,
+            "isCompleted": request.headers['isCompleted']!.first
+          });
         } else {
-//uri should be in format http://ip:port/secrecode/file-index
+          //uri should be in format http://ip:port/secretcode/file-index
           List requriToList = request.requestedUri.toString().split('/');
           if (int.parse(requriToList[requriToList.length - 2]) ==
               _randomSecretCode) {
@@ -110,8 +165,11 @@ class PhotonSender {
                 'attachment; filename=${fileModel.name}',
               );
 
+              //to send file size
               request.response.headers.add('Content-length', fileModel.size);
+
               try {
+                //to stream the file
                 await fileModel.file.openRead().pipe(request.response);
                 request.response.close();
               } catch (_) {}
@@ -121,30 +179,40 @@ class PhotonSender {
             }
           } else {
             request.response
-                .write('Wrong secret-code.File Share-server denied access');
+                .write('Wrong secret-code.FileShare-server denied access');
             request.response.close();
             //todo close the server if code is wrong _server.close();
           }
         }
       },
     );
-    return true;
+    return {
+      'hasErr': false,
+      'type': null,
+      'errMsg': null,
+    };
   }
 
-  static share(context, {bool externalIntent = false}) async {
+  static Future<Map<String, dynamic>> share(context,
+      {bool externalIntent = false}) async {
     if (externalIntent) {
-      var sharedMediaFiles = await ReceiveSharingIntent.getInitialMedia();
+      // When user tries to share files opened / listed on external app
+      // Photon will be opened along with intended files' paths.
+      List<SharedMediaFile> sharedMediaFiles =
+          await ReceiveSharingIntent.getInitialMedia();
       _fileList = sharedMediaFiles.map((e) => e.path).toList();
       await assignIP();
-      var res = _startServer(_fileList, context);
+      Future<Map<String, dynamic>> res = _startServer(_fileList, context);
       return await res;
     } else {
+      // User manually opens photon
+      // Selects files
       if (await getFilesPath()) {
         await assignIP();
-        var res = _startServer(_fileList, context);
-        return await res;
+        Map<String, dynamic> res = await _startServer(_fileList, context);
+        return res;
       } else {
-        return null;
+        return {'hasErr': true, 'type': 'file', 'errMsg': "No file chosen"};
       }
     }
   }
@@ -167,10 +235,13 @@ class PhotonSender {
       'os': Platform.operatingSystem,
       'version': Platform.operatingSystemVersion,
       'files-count': _fileList.length,
+      'avatar': avatar
     };
     SenderModel senderData = SenderModel.fromJson(info);
+
     return senderData;
   }
 
   bool get hasMultipleFiles => _fileList.length > 1;
+  static String get getFileShareLink => fileshareLink;
 }

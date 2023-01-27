@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
@@ -12,10 +13,11 @@ import '../controllers/controllers.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 
-class PhotonReceiver {
+class FileShareReceiver {
   static late int _secretCode;
   static late Map<String, dynamic> filePathMap;
   static late Box _box;
+  static late int senderID;
 
   ///to get network address [assumes class C address]
   static List<String> getNetAddress(List<String> ipList) {
@@ -41,7 +43,7 @@ class PhotonReceiver {
   }
 
   ///check if ip & port pair represent fileshare-server
-  static isPhotonServer(String ip, String port) async {
+  static isFileShareServer(String ip, String port) async {
     var dio = Dio();
     try {
       var resp = await dio.get('http://$ip:$port/fileshare-server');
@@ -69,7 +71,7 @@ class PhotonReceiver {
       Map<String, dynamic> item = await ele;
       if (item.containsKey('host')) {
         Future<dynamic> resp;
-        if ((resp = (isPhotonServer(
+        if ((resp = (isFileShareServer(
                 item['host'].toString(), item['port'].toString()))) !=
             null) {
           fileshareServers.add(await resp);
@@ -87,8 +89,23 @@ class PhotonReceiver {
           'receiver-name': Platform.localHostname,
           'os': Platform.operatingSystem,
         });
+    senderID = Random().nextInt(10000);
     var senderRespData = jsonDecode(resp.body);
     return senderRespData;
+  }
+
+  static sendReceiverRealtimeData(SenderModel senderModel,
+      {fileIndex = -1, isCompleted = true}) {
+    http.post(
+      Uri.parse('http://${senderModel.ip}:4040/receiver-data'),
+      headers: {
+        "receiverID": senderID.toString(),
+        "os": Platform.operatingSystem,
+        "hostName": Platform.localHostname,
+        "currentFile": '${fileIndex + 1}',
+        "isCompleted": '$isCompleted',
+      },
+    );
   }
 
   static receive(SenderModel senderModel, int secretCode) async {
@@ -110,6 +127,7 @@ class PhotonReceiver {
               filePathMap['paths'][fileIndex], fileIndex, senderModel);
         }
       }
+      sendReceiverRealtimeData(senderModel);
     } catch (e) {
       debugPrint('$e');
     }
@@ -132,6 +150,9 @@ class PhotonReceiver {
     int count = 0;
 
     try {
+      //sends post request every time receiver requests for a file
+      sendReceiverRealtimeData(senderModel,
+          fileIndex: fileIndex, isCompleted: false);
       s.start();
       getInstance.fileStatus[fileIndex].value = "downloading";
       await dio.download(
@@ -180,10 +201,11 @@ class PhotonReceiver {
       getInstance.speed.value = 0;
       getInstance.fileStatus[fileIndex].value = "cancelled";
       getInstance.isCancelled[fileIndex].value = true;
+
       if (!CancelToken.isCancel(e as DioError)) {
-        debugPrint(e.toString());
+        debugPrint("Dio error");
       } else {
-        debugPrint('error');
+        debugPrint(e.toString());
       }
     }
   }

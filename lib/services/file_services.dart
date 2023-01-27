@@ -119,9 +119,9 @@ class FileMethods {
     var tempDir = directory;
     //check if ends with / or \
     if (directory.path.endsWith(Platform.pathSeparator)) {
-      directory = Directory("${directory.path}File Share");
+      directory = Directory("${directory.path}FileShare");
     } else {
-      directory = Directory("${directory.path}${Platform.pathSeparator}File Share");
+      directory = Directory("${directory.path}${Platform.pathSeparator}FileShare");
     }
 
     try {

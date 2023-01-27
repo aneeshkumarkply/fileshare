@@ -3,7 +3,7 @@
   <id>com.github.abhi16180.fileshare</id>
   <name>fileshare</name>
   <summary>
-File Share is cross-platform file transfer application built using flutter.
+FileShare is cross-platform file transfer application built using flutter.
   </summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL3</project_license>
@@ -15,7 +15,7 @@ File Share is cross-platform file transfer application built using flutter.
   <developer_name>Abhilash Hegde</developer_name>
   <url type="homepage">https://github.com/abhi16180/fileshare</url>
   <description>
-    <p> File Share is a cross-platform file-transfer application built using flutter. It uses http to transfer files between devices.You can transfer files between devices that run File Share.(No wifi router is required ,you can use hotspot)</p>
+    <p> FileShare is a cross-platform file-transfer application built using flutter. It uses http to transfer files between devices.You can transfer files between devices that run FileShare.(No wifi router is required ,you can use hotspot)</p>
     <p>Features</p>
     <ul>
       <li>Cross-platform support</li>

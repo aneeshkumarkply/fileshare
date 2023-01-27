@@ -1,14 +1,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tripleafoodies.fileshare">
    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-feature android:name="android.software.leanback"
-        android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen"
-        android:required="false" />
+   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Required only if your app targets Android 13. -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
+    <!-- Required to maintain app compatibility. -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
    <application
-        android:label="File Share"
+        android:label="FileShare"
+        android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-3829581963890407~5260560450"
+           />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -27,7 +39,6 @@
               />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category  android:name="android.intent.category.LEANBACK_LAUNCHER"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
 

@@ -12,16 +12,17 @@ tar:
 		&& cp linux/fileshare.desktop $(TEMP_DIR)\
 		&& cp assets/images/icon.png $(TEMP_DIR)\
 		&& cp linux/com.github.abhi16180.fileshare.appdata.xml $(TEMP_DIR)\
-		&& tar -cJf build/File Share-linux-x86_64.tar.xz -C $(TEMP_DIR) .\
+		&& tar -cJf build/FileShare-linux-x86_64.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
 
 
 appimage:
 				 appimage-builder --recipe AppImageBuilder.yml\
-				 && mv File Share-*-x86_64.AppImage build
+				 && mv FileShare-*-x86_64.AppImage build
 
 
 #windows
+
 
 innoinstall:
 						powershell curl -o build\installer.exe http://files.jrsoftware.org/is/6/innosetup-${INNO_VERSION}.exe
@@ -31,7 +32,7 @@ inno:
 		 powershell .\build\iscc\iscc.exe scripts\windows-setup-creator.iss
 
 choco:
-			powershell cp dist\File Share-windows-x86_64-setup.exe choco-struct\tools
+			powershell cp dist\FileShare-windows-x86_64-setup.exe choco-struct\tools
 			powershell choco pack .\choco-struct\fileshare.nuspec  --outputdirectory dist
 
 
