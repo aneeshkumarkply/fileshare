@@ -21,7 +21,7 @@ class _MobileHomeState extends State<MobileHome> {
 
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
-
+  late  NativeAd _ad;
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
   @override
@@ -30,6 +30,10 @@ class _MobileHomeState extends State<MobileHome> {
     //_showBannerAd();
     // myBanner.load();
     if (Platform.isAndroid || Platform.isIOS) {
+
+      MobileAds.instance.updateRequestConfiguration(
+         //RequestConfiguration(testDeviceIds: ['4E019D6BA455788B40B0B66DFA3F38E4']));
+        RequestConfiguration(testDeviceIds: ['B8893CF5156FE5AA9F87F038AE32C0EC']));
       // TODO: Initialize _bannerAd
       _bannerAd = BannerAd(
         adUnitId: AdHelper.bannerAdUnitId,
@@ -51,6 +55,27 @@ class _MobileHomeState extends State<MobileHome> {
       );
 
       _bannerAd.load();
+
+
+      _ad = NativeAd(
+        adUnitId: AdHelper.nativeAdUnitId,
+        factoryId: 'listTile',
+        request: const AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _ad = ad as NativeAd;
+               print('Ads to loaded');
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Releases an ad resource when it fails to load
+            ad.dispose();
+            print('Ad load failed (code=${error.code} message=${error.message})');       },
+        ),
+      );
+
+      _ad.load();
     }
   }
 
@@ -58,7 +83,10 @@ class _MobileHomeState extends State<MobileHome> {
   void dispose() {
     super.dispose();
     // TODO: Dispose a BannerAd object
-    _bannerAd.dispose();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _bannerAd.dispose();
+      _ad.dispose();
+    }
   }
 
   @override
@@ -71,13 +99,15 @@ class _MobileHomeState extends State<MobileHome> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (_isBannerAdReady)
+             // if (_isBannerAdReady)
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
-                    width: _bannerAd.size.width.toDouble(),
-                    height: _bannerAd.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd),
+                   // width: _bannerAd.size.width.toDouble(),
+                   // height: _bannerAd.size.height.toDouble(),
+                   // child: AdWidget(ad: _bannerAd),
+                    height: 200,
+                    child: AdWidget(ad: _ad),
                   ),
                 ),
               if (!isLoading) ...{

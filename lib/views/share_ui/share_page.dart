@@ -68,7 +68,9 @@ class _SharePageState extends State<SharePage> {
   void dispose() {
     super.dispose();
     // TODO: Dispose a BannerAd object
-    _bannerAd.dispose();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _bannerAd.dispose();
+    }
   }
 
   @override

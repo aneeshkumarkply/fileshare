@@ -63,7 +63,9 @@ class _ReceivePageState extends State<ReceivePage> {
   void dispose() {
     super.dispose();
     // TODO: Dispose a BannerAd object
-    _bannerAd.dispose();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _bannerAd.dispose();
+    }
   }
 
   Future<List<SenderModel>> _scan() async {

@@ -57,9 +57,10 @@ class _WidescreenHomeState extends State<WidescreenHome> {
   void dispose() {
     super.dispose();
     // TODO: Dispose a BannerAd object
-    _bannerAd.dispose();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _bannerAd.dispose();
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

@@ -81,7 +81,9 @@ class _ProgressPageState extends State<ProgressPage> {
   void dispose() async {
     super.dispose();
     await stopWatchTimer.dispose();
-    _bannerAd.dispose();
+    if (Platform.isAndroid || Platform.isIOS) {
+      _bannerAd.dispose();
+    }
   }
 
   @override

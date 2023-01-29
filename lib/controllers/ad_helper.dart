@@ -35,7 +35,7 @@ class AdHelper {
 //Test
   static String get nativeAdUnitId1 {
     if (Platform.isAndroid) {
-      return "ca-app-pub-3940256099942544/2247696110";
+      return "ca-app-pub-3829581963890407/8735204360";
     } else if (Platform.isIOS) {
       return "ca-app-pub-3940256099942544/1712485313";
     } else {
@@ -46,7 +46,7 @@ class AdHelper {
 //Correct
   static String get nativeAdUnitId {
     if (Platform.isAndroid) {
-      return "ca-app-pub-3829581963890407/2204663109";
+      return "ca-app-pub-3829581963890407/8735204360";
     } else if (Platform.isIOS) {
       return "";
     } else {
