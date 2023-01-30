@@ -31,9 +31,9 @@ class _MobileHomeState extends State<MobileHome> {
     // myBanner.load();
     if (Platform.isAndroid || Platform.isIOS) {
 
-      MobileAds.instance.updateRequestConfiguration(
+     // MobileAds.instance.updateRequestConfiguration(
          //RequestConfiguration(testDeviceIds: ['4E019D6BA455788B40B0B66DFA3F38E4']));
-        RequestConfiguration(testDeviceIds: ['B8893CF5156FE5AA9F87F038AE32C0EC']));
+       //RequestConfiguration(testDeviceIds: ['B8893CF5156FE5AA9F87F038AE32C0EC']));
       // TODO: Initialize _bannerAd
       _bannerAd = BannerAd(
         adUnitId: AdHelper.bannerAdUnitId,
@@ -65,12 +65,14 @@ class _MobileHomeState extends State<MobileHome> {
           onAdLoaded: (ad) {
             setState(() {
               _ad = ad as NativeAd;
+              _isBannerAdReady = true;
                print('Ads to loaded');
             });
           },
           onAdFailedToLoad: (ad, error) {
             // Releases an ad resource when it fails to load
             ad.dispose();
+            _isBannerAdReady = false;
             print('Ad load failed (code=${error.code} message=${error.message})');       },
         ),
       );
@@ -99,14 +101,15 @@ class _MobileHomeState extends State<MobileHome> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-             // if (_isBannerAdReady)
+              if (_isBannerAdReady)
                 Align(
                   alignment: Alignment.topCenter,
                   child: Container(
                    // width: _bannerAd.size.width.toDouble(),
                    // height: _bannerAd.size.height.toDouble(),
                    // child: AdWidget(ad: _bannerAd),
-                    height: 200,
+                    height: size.height / 6,
+                    width: size.width / 1.1,
                     child: AdWidget(ad: _ad),
                   ),
                 ),
@@ -132,7 +135,7 @@ class _MobileHomeState extends State<MobileHome> {
                         Lottie.asset(
                           'assets/lottie/rocket-send.json',
                           width: size.width / 1.6,
-                          height: size.height / 6,
+                          height: size.height /5,
                         ),
                         const Padding(
                           padding: EdgeInsets.all(8.0),

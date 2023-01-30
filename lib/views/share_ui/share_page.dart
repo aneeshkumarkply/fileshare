@@ -32,6 +32,7 @@ class _SharePageState extends State<SharePage> {
 
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
+  late  NativeAd _ad;
 
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
@@ -62,6 +63,29 @@ class _SharePageState extends State<SharePage> {
       );
 
       _bannerAd.load();
+
+
+      _ad = NativeAd(
+        adUnitId: AdHelper.nativeAdUnitId,
+        factoryId: 'listTile',
+        request: const AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _ad = ad as NativeAd;
+              _isBannerAdReady = true;
+              print('Ads to loaded');
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Releases an ad resource when it fails to load
+            ad.dispose();
+            _isBannerAdReady = false;
+            print('Ad load failed (code=${error.code} message=${error.message})');       },
+        ),
+      );
+
+      _ad.load();
     }
   }
   @override
@@ -70,6 +94,7 @@ class _SharePageState extends State<SharePage> {
     // TODO: Dispose a BannerAd object
     if (Platform.isAndroid || Platform.isIOS) {
       _bannerAd.dispose();
+      _ad.dispose();
     }
   }
 
@@ -77,6 +102,7 @@ class _SharePageState extends State<SharePage> {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
       child: ValueListenableBuilder(
           valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
@@ -112,11 +138,17 @@ class _SharePageState extends State<SharePage> {
                                 Align(
                                   alignment: Alignment.topCenter,
                                   child: Container(
-                                    width: _bannerAd.size.width.toDouble(),
-                                    height: _bannerAd.size.height.toDouble(),
-                                    child: AdWidget(ad: _bannerAd),
+                                    // width: _bannerAd.size.width.toDouble(),
+                                    // height: _bannerAd.size.height.toDouble(),
+                                    // child: AdWidget(ad: _bannerAd),
+                                    height: size.height / 6,
+                                    width: size.width / 1.1,
+                                    child: AdWidget(ad: _ad),
                                   ),
-                                ),
+                                ),]),
+                  Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                               Lottie.asset(
                                 'assets/lottie/share.json',
                                 width: 240,
@@ -134,7 +166,7 @@ class _SharePageState extends State<SharePage> {
                                   backgroundColor: Colors.white,
                                 ),
                               )
-                            ],
+                            ]
                           )
                         } else ...{
                           Row(
@@ -144,9 +176,12 @@ class _SharePageState extends State<SharePage> {
                           Align(
                             alignment: Alignment.topCenter,
                             child: Container(
-                              width: _bannerAd.size.width.toDouble(),
-                              height: _bannerAd.size.height.toDouble(),
-                              child: AdWidget(ad: _bannerAd),
+                              // width: _bannerAd.size.width.toDouble(),
+                              // height: _bannerAd.size.height.toDouble(),
+                              // child: AdWidget(ad: _bannerAd),
+                              height: size.height / 6,
+                              width: size.width / 1.1,
+                              child: AdWidget(ad: _ad),
                             ),
                           ),]),
                           Lottie.asset(

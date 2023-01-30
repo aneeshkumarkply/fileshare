@@ -348,12 +348,11 @@ packages:
   file_picker:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "423b03281a87f9326825dc3ec3d9768f13a8c46c"
-      url: "https://github.com/abhi16180/flutter_file_picker.git"
-    source: git
-    version: "5.2.0"
+      name: file_picker
+      sha256: d090ae03df98b0247b82e5928f44d1b959867049d18d73635e2e0bc3f49542b9
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.5"
   fixnum:
     dependency: transitive
     description:

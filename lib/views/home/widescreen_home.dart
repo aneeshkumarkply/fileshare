@@ -16,11 +16,12 @@ class WidescreenHome extends StatefulWidget {
 }
 
 class _WidescreenHomeState extends State<WidescreenHome> {
+  FileShareSender fileshareSeFileShareSender = FileShareSender();
   bool isLoading = false;
 
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
-
+  late  NativeAd _ad;
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
   @override
@@ -29,6 +30,10 @@ class _WidescreenHomeState extends State<WidescreenHome> {
     //_showBannerAd();
     // myBanner.load();
     if (Platform.isAndroid || Platform.isIOS) {
+
+     // MobileAds.instance.updateRequestConfiguration(
+         //RequestConfiguration(testDeviceIds: ['4E019D6BA455788B40B0B66DFA3F38E4']));
+       //RequestConfiguration(testDeviceIds: ['B8893CF5156FE5AA9F87F038AE32C0EC']));
       // TODO: Initialize _bannerAd
       _bannerAd = BannerAd(
         adUnitId: AdHelper.bannerAdUnitId,
@@ -50,6 +55,29 @@ class _WidescreenHomeState extends State<WidescreenHome> {
       );
 
       _bannerAd.load();
+
+
+      _ad = NativeAd(
+        adUnitId: AdHelper.nativeAdUnitId,
+        factoryId: 'listTile',
+        request: const AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _ad = ad as NativeAd;
+              _isBannerAdReady = true;
+               print('Ads to loaded');
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Releases an ad resource when it fails to load
+            ad.dispose();
+            _isBannerAdReady = false;
+            print('Ad load failed (code=${error.code} message=${error.message})');       },
+        ),
+      );
+
+      _ad.load();
     }
   }
 
@@ -59,20 +87,48 @@ class _WidescreenHomeState extends State<WidescreenHome> {
     // TODO: Dispose a BannerAd object
     if (Platform.isAndroid || Platform.isIOS) {
       _bannerAd.dispose();
+      _ad.dispose();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return ValueListenableBuilder(
         valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
         builder: (_, AdaptiveThemeMode mode, __) {
-          return  Row(
+          return
+            Column(mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+               children: [Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
 
-                  if (!isLoading) ...{
+
+                    if (_isBannerAdReady)...{
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          // width: _bannerAd.size.width.toDouble(),
+                          // height: _bannerAd.size.height.toDouble(),
+                          // child: AdWidget(ad: _bannerAd),
+                          height: size.height / 5,
+                          width: size.width / 2,
+                          child: AdWidget(ad: _ad),
+                        ),
+                      ),}
+                    else ...{
+                       Container(
+                        height: size.height / 5,
+                      ),
+                    }
+                ]),
+                if (!isLoading) ...{
+          Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
                     Card(
                       color: mode.isDark
                           ? const Color.fromARGB(255, 18, 23, 26)
@@ -112,19 +168,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                         ),
                       ),
                     ),
-                    if (_isBannerAdReady) ...{
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: _bannerAd.size.width.toDouble(),
-                          height: _bannerAd.size.height.toDouble(),
-                          child: AdWidget(ad: _bannerAd),
-                        ),
-                      ),}
-                    else ...{
-                    SizedBox(
-                      width: size.width / 10,
-                    ),},
+
                     Card(
                       color: mode.isDark
                           ? const Color.fromARGB(255, 18, 23, 26)
@@ -193,6 +237,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                         ),
                       ),
                     ),
+          ],)
                   } else
                     ...{
                       Center(
@@ -213,9 +258,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                         ),
                       )
                     }
-
-                ],
-
+]
           );
         });
   }

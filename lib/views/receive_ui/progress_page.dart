@@ -40,6 +40,7 @@ class _ProgressPageState extends State<ProgressPage> {
 
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
+  late  NativeAd _ad;
 
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
@@ -73,6 +74,29 @@ class _ProgressPageState extends State<ProgressPage> {
       );
 
       _bannerAd.load();
+
+
+      _ad = NativeAd(
+        adUnitId: AdHelper.nativeAdUnitId,
+        factoryId: 'listTile',
+        request: const AdRequest(),
+        listener: NativeAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _ad = ad as NativeAd;
+              _isBannerAdReady = true;
+              print('Ads to loaded');
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            // Releases an ad resource when it fails to load
+            ad.dispose();
+            _isBannerAdReady = false;
+            print('Ad load failed (code=${error.code} message=${error.message})');       },
+        ),
+      );
+
+      _ad.load();
     }
   }
 
@@ -83,11 +107,13 @@ class _ProgressPageState extends State<ProgressPage> {
     await stopWatchTimer.dispose();
     if (Platform.isAndroid || Platform.isIOS) {
       _bannerAd.dispose();
+      _ad.dispose();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     var getInstance = GetIt.I<PercentageController>();
     var width = MediaQuery.of(context).size.width > 720
         ? MediaQuery.of(context).size.width / 1.8
@@ -127,13 +153,18 @@ class _ProgressPageState extends State<ProgressPage> {
                     child: Column(
                       children: [
                         if (_isBannerAdReady)
-                          Align(
+                          Row(
+                          children : [Align(
                             alignment: Alignment.topCenter,
                             child: Container(
-                              width: _bannerAd.size.width.toDouble(),
-                              height: _bannerAd.size.height.toDouble(),
-                              child: AdWidget(ad: _bannerAd),
+                              // width: _bannerAd.size.width.toDouble(),
+                              // height: _bannerAd.size.height.toDouble(),
+                              // child: AdWidget(ad: _bannerAd),
+                              height: size.height / 6,
+                              width: size.width / 1.1,
+                              child: AdWidget(ad: _ad),
                             ),
+                          ),]
                           ),
                         Dashboard(
                           mode: mode,
