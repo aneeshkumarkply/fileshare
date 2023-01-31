@@ -15,6 +15,7 @@ import 'views/home/mobile_home.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform/platform.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:in_app_update/in_app_update.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -25,11 +26,41 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   String? appVersion;
+  AppUpdateInfo? _updateInfo;
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+  Future<void> ImmediateUpdate() async {
+    //if (kIsWeb) {
+    if (const LocalPlatform().isAndroid) {
+      InAppUpdate.checkForUpdate().then((info) {
+        if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+          if (info.immediateUpdateAllowed) {
+            InAppUpdate.performImmediateUpdate().then((value) {}).catchError((
+                e) {
+              showSnack(e.toString());
+            });
+          }
+        }
+      }).catchError((e) {
+        showSnack(e.toString());
+      });
+      // }
+    }
+  }
+
+
+  void showSnack(String text) {
+    if (_scaffoldKey.currentContext != null) {
+      ScaffoldMessenger.of(_scaffoldKey.currentContext!)
+          .showSnackBar(SnackBar(content: Text(text)));
+    }
+  }
+
 
   @override
   void initState() {
     main();
     super.initState();
+    ImmediateUpdate();
   }
 
   Future<void> main() async {
@@ -48,6 +79,7 @@ class _AppState extends State<App> {
     Size size = MediaQuery.of(context).size;
     GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
     return ValueListenableBuilder(
+      key: _scaffoldKey,
       valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
       builder: (_, AdaptiveThemeMode mode, child) {
         return Scaffold(
