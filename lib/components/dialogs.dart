@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:path/path.dart';
+import 'package:fileshare/main.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as ulaunch;
 
@@ -27,7 +30,7 @@ void privacyPolicyDialog(BuildContext context, String data) async {
               width: MediaQuery.of(context).size.height / 1.2,
               child: Markdown(
                   listItemCrossAxisAlignment:
-                      MarkdownListItemCrossAxisAlignment.start,
+                  MarkdownListItemCrossAxisAlignment.start,
                   data: data)),
           actions: [
             ElevatedButton(
@@ -140,7 +143,7 @@ sharePageAlertDialog(BuildContext context) async {
               GetIt.I.get<ReceiverDataController>().receiverMap.clear();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const App()),
-                  (route) => false);
+                      (route) => false);
             },
             child: const Text('Terminate'),
           )
@@ -162,7 +165,7 @@ sharePageWillPopDialog(context) async {
             : Colors.white,
         title: const Text('Server alert'),
         content:
-            const Text('Would you like to terminate the current session ?'),
+        const Text('Would you like to terminate the current session ?'),
         actions: [
           ElevatedButton(
               onPressed: () {
@@ -190,15 +193,15 @@ sharePageWillPopDialog(context) async {
 }
 
 senderRequestDialog(
-  BuildContext context,
-  String username,
-  String os,
-) async {
+    // BuildContext context,
+    String username,
+    String os,
+    ) async {
   bool allowRequest = false;
   SharedPreferences prefInst = await SharedPreferences.getInstance();
 
   await showDialog(
-      context: context,
+      context: nav.currentContext!,
       builder: (context) {
         return AlertDialog(
           backgroundColor: prefInst.getBool('isDarkTheme') == true

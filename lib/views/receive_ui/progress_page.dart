@@ -100,7 +100,6 @@ class _ProgressPageState extends State<ProgressPage> {
     }
   }
 
-
   @override
   void dispose() async {
     super.dispose();

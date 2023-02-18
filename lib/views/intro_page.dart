@@ -23,7 +23,6 @@ class _IntroPageState extends State<IntroPage> {
   List<bool> selected = List.generate(4, (index) => false);
   Box box = Hive.box('appData');
   TextEditingController usernameController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -42,10 +41,21 @@ class _IntroPageState extends State<IntroPage> {
                   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
                   AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
                   if (androidInfo.version.sdkInt >= 33) {
-                    var videos = await Permission.videos.request();
-                    var status = await Permission.mediaLibrary.request();
+                   // var videos = await Permission.videos.request();
+                  //  var status = await Permission.mediaLibrary.request();
 
-                    if (status.isGranted) {
+                    Map<Permission, PermissionStatus> statuses = await [
+                      Permission.location,
+                      Permission.audio,
+                      Permission.camera,
+                      Permission.videos,
+                      Permission.nearbyWifiDevices,
+                    ].request();
+                    if ((statuses[Permission.location] as PermissionStatus).isGranted &&
+                        (statuses[Permission.audio] as PermissionStatus).isGranted &&
+                        (statuses[Permission.videos] as PermissionStatus).isGranted &&
+                        (statuses[Permission.camera] as PermissionStatus).isGranted &&
+                        (statuses[Permission.nearbyWifiDevices] as PermissionStatus).isGranted) {
                       SharedPreferences prefInst =
                           await SharedPreferences.getInstance();
                       prefInst.setBool('isIntroRead', true);
@@ -54,11 +64,18 @@ class _IntroPageState extends State<IntroPage> {
                     } else {
                       // ignore: use_build_context_synchronously
                       showSnackBar(context,
-                          "Cannot use the app without storage permission");
+                          "Cannot use the app without permission");
                     }
                   } else {
-                    var status = await Permission.storage.request();
-                    if (status.isGranted) {
+                    Map<Permission, PermissionStatus> statuses = await [
+                      Permission.location,
+                      Permission.camera,
+                      Permission.storage,
+
+                    ].request();
+                    if ((statuses[Permission.location] as PermissionStatus).isGranted &&
+                        (statuses[Permission.camera] as PermissionStatus).isGranted &&
+                        (statuses[Permission.storage] as PermissionStatus).isGranted) {
                       SharedPreferences prefInst =
                           await SharedPreferences.getInstance();
                       prefInst.setBool('isIntroRead', true);
@@ -67,7 +84,7 @@ class _IntroPageState extends State<IntroPage> {
                     } else {
                       // ignore: use_build_context_synchronously
                       showSnackBar(context,
-                          "Cannot use the app without storage permission");
+                          "Cannot use the app without permission");
                     }
                   }
                 } else {

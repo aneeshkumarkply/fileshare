@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:fileshare/methods/methods.dart';
 import 'package:fileshare/models/sender_model.dart';
@@ -16,8 +17,9 @@ import 'package:http/http.dart' as http;
 class FileShareReceiver {
   static late int _secretCode;
   static late Map<String, dynamic> filePathMap;
-  static late Box _box;
-  static late int senderID;
+  static final Box _box = Hive.box('appData');
+  static late int id;
+  static int totalTime = 0;
 
   ///to get network address [assumes class C address]
   static List<String> getNetAddress(List<String> ipList) {
@@ -72,7 +74,7 @@ class FileShareReceiver {
       if (item.containsKey('host')) {
         Future<dynamic> resp;
         if ((resp = (isFileShareServer(
-                item['host'].toString(), item['port'].toString()))) !=
+            item['host'].toString(), item['port'].toString()))) !=
             null) {
           fileshareServers.add(await resp);
         }
@@ -83,25 +85,29 @@ class FileShareReceiver {
   }
 
   static isRequestAccepted(SenderModel senderModel) async {
+    String username = _box.get('username');
+    var avatar = await rootBundle.load(_box.get('avatarPath'));
     var resp = await http.get(
         Uri.parse('http://${senderModel.ip}:${senderModel.port}/get-code'),
         headers: {
-          'receiver-name': Platform.localHostname,
+          'receiver-name': username,
           'os': Platform.operatingSystem,
+          'avatar': avatar.buffer.asUint8List().toString()
+          // 'avatar': avatar.buffer.asUint8List().toString()s
         });
-    senderID = Random().nextInt(10000);
+    id = Random().nextInt(10000);
     var senderRespData = jsonDecode(resp.body);
     return senderRespData;
   }
 
-  static sendReceiverRealtimeData(SenderModel senderModel,
+  static sendBackReceiverRealtimeData(SenderModel senderModel,
       {fileIndex = -1, isCompleted = true}) {
     http.post(
       Uri.parse('http://${senderModel.ip}:4040/receiver-data'),
       headers: {
-        "receiverID": senderID.toString(),
+        "receiverID": id.toString(),
         "os": Platform.operatingSystem,
-        "hostName": Platform.localHostname,
+        "hostName": _box.get('username'),
         "currentFile": '${fileIndex + 1}',
         "isCompleted": '$isCompleted',
       },
@@ -109,41 +115,62 @@ class FileShareReceiver {
   }
 
   static receive(SenderModel senderModel, int secretCode) async {
+    PercentageController getInstance =
+    GetIt.instance.get<PercentageController>();
     //getting hiveObj
-    var getInstance = GetIt.instance.get<PercentageController>();
-    _box = Hive.box('appData');
+
+    String filePath = '';
+    totalTime = 0;
     try {
       var resp = await Dio()
           .get('http://${senderModel.ip}:${senderModel.port}/getpaths');
       filePathMap = jsonDecode(resp.data);
       _secretCode = secretCode;
+
       for (int fileIndex = 0;
-          fileIndex < filePathMap['paths']!.length;
-          fileIndex++) {
+      fileIndex < filePathMap['paths']!.length;
+      fileIndex++) {
         //if a file is cancelled once ,it should not be automatically fetched without user action
         if (getInstance.isCancelled[fileIndex].value == false) {
           getInstance.fileStatus[fileIndex].value = Status.downloading.name;
-          await getFile(
-              filePathMap['paths'][fileIndex], fileIndex, senderModel);
+
+          if (filePathMap.containsKey('isApk')) {
+            if (filePathMap['isApk']) {
+              // when sender sends apk files
+              // this case is not true when sender sends apk from generic file selection
+              filePath =
+              '${filePathMap['paths'][fileIndex].toString().split("/")[4].split("-").first}.apk';
+            } else {
+              filePath = filePathMap['paths'][fileIndex];
+            }
+          } else {
+            filePath = filePathMap['paths'][fileIndex];
+          }
+
+          await getFile(filePath, fileIndex, senderModel);
         }
       }
-      sendReceiverRealtimeData(senderModel);
+      // sends after last file is sent
+
+      sendBackReceiverRealtimeData(senderModel);
+      getInstance.isFinished.value = true;
+      getInstance.totalTimeElapsed.value = totalTime;
     } catch (e) {
       debugPrint('$e');
     }
   }
 
   static getFile(
-    String filePath,
-    int fileIndex,
-    SenderModel senderModel,
-  ) async {
+      String filePath,
+      int fileIndex,
+      SenderModel senderModel,
+      ) async {
     Dio dio = Dio();
     PercentageController getInstance = GetIt.I<PercentageController>();
     //creates instance of cancelToken and inserts it to list
     getInstance.cancelTokenList.insert(fileIndex, CancelToken());
     String savePath = await FileMethods.getSavePath(filePath, senderModel);
-    Stopwatch s = Stopwatch();
+    Stopwatch stopwatch = Stopwatch();
     int? prevBits;
     int? prevDuration;
     //for handling speed update frequency
@@ -151,9 +178,10 @@ class FileShareReceiver {
 
     try {
       //sends post request every time receiver requests for a file
-      sendReceiverRealtimeData(senderModel,
+      sendBackReceiverRealtimeData(senderModel,
           fileIndex: fileIndex, isCompleted: false);
-      s.start();
+      stopwatch.start();
+
       getInstance.fileStatus[fileIndex].value = "downloading";
       await dio.download(
         'http://${senderModel.ip}:4040/$_secretCode/$fileIndex',
@@ -164,15 +192,15 @@ class FileShareReceiver {
           if (total != -1) {
             count++;
             getInstance.percentage[fileIndex].value =
-                (double.parse((received / total * 100).toStringAsFixed(0)));
+            (double.parse((received / total * 100).toStringAsFixed(0)));
             if (prevBits == null) {
               prevBits = received;
-              prevDuration = s.elapsedMicroseconds;
+              prevDuration = stopwatch.elapsedMicroseconds;
               getInstance.minSpeed.value = getInstance.maxSpeed.value =
-                  ((prevBits! * 8) / prevDuration!);
+              ((prevBits! * 8) / prevDuration!);
             } else {
               prevBits = received - prevBits!;
-              prevDuration = s.elapsedMicroseconds - prevDuration!;
+              prevDuration = stopwatch.elapsedMicroseconds - prevDuration!;
             }
           }
           //used for reducing speed update frequency
@@ -188,10 +216,13 @@ class FileShareReceiver {
             // update estimated time
             getInstance.estimatedTime.value = getEstimatedTime(
                 received * 8, total * 8, getInstance.speed.value);
+            //update time elapsed
+
           }
         },
       );
-      s.reset();
+      totalTime = totalTime + stopwatch.elapsed.inSeconds;
+      stopwatch.reset();
       getInstance.speed.value = 0.0;
       //after completion of download mark it as true
       getInstance.isReceived[fileIndex].value = true;
@@ -209,23 +240,4 @@ class FileShareReceiver {
       }
     }
   }
-}
-
-getEstimatedTime(receivedBits, totalBits, currentSpeed) {
-  ///speed in [mega bits  x * 10^6 bits ]
-  double estBits = (totalBits - receivedBits) / 1000000;
-  int estTimeInInt = (estBits ~/ currentSpeed);
-  int mins = 0;
-  int seconds = 0;
-  int hours = 0;
-  hours = estTimeInInt ~/ 3600;
-  mins = (estTimeInInt % 3600) ~/ 60;
-  seconds = ((estTimeInInt % 3600) % 60);
-  if (hours == 0) {
-    if (mins == 0) {
-      return 'About $seconds seconds left';
-    }
-    return 'About $mins m and $seconds s left';
-  }
-  return 'About $hours h $mins m $seconds s left';
 }

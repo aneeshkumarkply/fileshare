@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:fileshare/methods/share_intent.dart';
+import 'package:fileshare/views/apps_list.dart';
 import 'package:fileshare/views/handle_intent_ui.dart';
 import 'package:fileshare/views/drawer/history.dart';
 import 'package:fileshare/views/intro_page.dart';
@@ -19,6 +20,7 @@ import 'app.dart';
 import 'views/share_ui/share_page.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 
+final nav = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Hive.init((await getApplicationDocumentsDirectory()).path);
@@ -26,7 +28,9 @@ void main() async {
   Box box = Hive.box('appData');
   box.get('avatarPath') ?? box.put('avatarPath', 'assets/avatars/1.png');
   box.get('username') ?? box.put('username', '${Platform.localHostname} user');
+  box.get('queryPackages') ?? box.put('queryPackages', false);
   GetIt getIt = GetIt.instance;
+
   SharedPreferences prefInst = await SharedPreferences.getInstance();
   prefInst.get('isIntroRead') ?? prefInst.setBool('isIntroRead', false);
   prefInst.get('isDarkTheme') ?? prefInst.setBool('isDarkTheme', true);
@@ -71,6 +75,7 @@ void main() async {
           : AdaptiveThemeMode.light,
       builder: (theme, dark) {
         return MaterialApp(
+          navigatorKey: nav,
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: dark,
@@ -88,7 +93,8 @@ void main() async {
             '/home': (context) => const App(),
             '/sharepage': (context) => const SharePage(),
             '/receivepage': (context) => const ReceivePage(),
-            '/history': (context) => const HistoryPage()
+            '/history': (context) => const HistoryPage(),
+            '/apps': ((context) => const AppsList()),
           },
         );
       }));

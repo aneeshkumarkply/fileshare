@@ -256,7 +256,9 @@ class _SharePageState extends State<SharePage> {
                                       var keys = receiverDataInst
                                           .receiverMap.keys
                                           .toList();
+
                                       var data = receiverDataInst.receiverMap;
+
                                       return ListTile(
                                         title: Center(
                                           child: Column(
@@ -279,7 +281,10 @@ class _SharePageState extends State<SharePage> {
                                               ),
                                               Center(
                                                 child: Text(
-                                                    "Receiver name : ${data[keys[item]]['os']}"),
+                                                  "Receiver name : ${data[keys[item]]['hostName']}",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
                                               data[keys[item]]['isCompleted'] ==
                                                       'true'

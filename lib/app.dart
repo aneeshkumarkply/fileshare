@@ -25,6 +25,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  TextEditingController usernameController = TextEditingController();
   String? appVersion;
   AppUpdateInfo? _updateInfo;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
@@ -70,10 +71,8 @@ class _AppState extends State<App> {
     });
   }
 
-  TextEditingController usernameController = TextEditingController();
 
   Box box = Hive.box('appData');
-
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;

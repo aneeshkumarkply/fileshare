@@ -56,8 +56,7 @@ class _HandleIntentUIState extends State<HandleIntentUI> {
                     sts(() {
                       isLoading = true;
                     });
-                    await FileShareSender.handleSharing(context,
-                        externalIntent: true);
+                    await FileShareSender.handleSharing(externalIntent: true);
                     sts(() {
                       isLoading = false;
                     });
