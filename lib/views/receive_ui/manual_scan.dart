@@ -27,7 +27,8 @@ class _ReceivePageState extends State<ReceivePage> {
   late Directory dir;
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
-
+  late  NativeAd _ad;
+  late  NativeAd _ad1;
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
   @override
@@ -58,13 +59,60 @@ class _ReceivePageState extends State<ReceivePage> {
 
       _bannerAd.load();
     }
+
+    _ad = NativeAd(
+      adUnitId: AdHelper.nativeAdUnitId,
+      factoryId: 'listTile',
+      request: const AdRequest(),
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _ad = ad as NativeAd;
+            _isBannerAdReady = true;
+            print('Ads to loaded');
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          // Releases an ad resource when it fails to load
+          ad.dispose();
+          _isBannerAdReady = false;
+          print('Ad load failed (code=${error.code} message=${error.message})');       },
+      ),
+    );
+
+    _ad.load();
+
+    _ad1 = NativeAd(
+      adUnitId: AdHelper.nativeAdUnitId1,
+      factoryId: 'listTile',
+      request: const AdRequest(),
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _ad1 = ad as NativeAd;
+            _isBannerAdReady = true;
+            print('Ads to loaded');
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          // Releases an ad resource when it fails to load
+          ad.dispose();
+          _isBannerAdReady = false;
+          print('Ad load failed (code=${error.code} message=${error.message})');       },
+      ),
+    );
+
+    _ad1.load();
   }
+
   @override
   void dispose() {
     super.dispose();
     // TODO: Dispose a BannerAd object
     if (Platform.isAndroid || Platform.isIOS) {
       _bannerAd.dispose();
+      _ad.dispose();
+      _ad1.dispose();
     }
   }
 
@@ -87,7 +135,7 @@ class _ReceivePageState extends State<ReceivePage> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     bool isRequestSent = false;
-
+    Size size = MediaQuery.of(context).size;
     return Shortcuts(
       shortcuts: {LogicalKeySet(LogicalKeyboardKey.backspace): GoBackIntent()},
       child: Actions(
@@ -135,6 +183,17 @@ class _ReceivePageState extends State<ReceivePage> {
                                 : MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              Align(
+                                alignment: Alignment.topCenter,
+
+                                child: Container(
+                                  // width: _bannerAd.size.width.toDouble(),
+                                  // height: _bannerAd.size.height.toDouble(),
+                                  // child: AdWidget(ad: _bannerAd),
+                                  height: size.height / 5,
+                                  width: size.width / 1.1,
+                                  child: AdWidget(ad: _ad),
+                                ),),
                               if (snap.data.length == 0) ...{
                                 Center(
                                   child: Focus(
@@ -369,7 +428,18 @@ class _ReceivePageState extends State<ReceivePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Center(
+                                Align(
+                                  alignment: Alignment.topCenter,
+
+                                  child: Container(
+                                    // width: _bannerAd.size.width.toDouble(),
+                                    // height: _bannerAd.size.height.toDouble(),
+                                    // child: AdWidget(ad: _bannerAd),
+                                    height: size.height / 5,
+                                    width: size.width / 1.1,
+                                    child: AdWidget(ad: _ad1),
+                                  ),),
+                                Container(
                                   child: Lottie.asset(
                                     'assets/lottie/searching.json',
                                   ),
