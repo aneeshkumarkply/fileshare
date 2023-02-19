@@ -55,6 +55,8 @@ dependencies:
   flutter_displaymode: ^0.4.1
 
   file_picker: ^5.2.5
+
+
   device_apps:
   provider: 
   adaptive_theme: 

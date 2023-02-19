@@ -119,7 +119,7 @@ class FileMethods {
           var temp = Directory('/storage/emulated/0/Download/');
           (await temp.exists())
               ? directory = temp
-              : directory = await getApplicationDocumentsDirectory();
+              : directory = (await getDownloadsDirectory())!;
           break;
 
         case "ios":
@@ -142,9 +142,9 @@ class FileMethods {
     var tempDir = directory;
     //check if ends with / or \
     if (directory.path.endsWith(Platform.pathSeparator)) {
-      directory = Directory("${directory.path}FileShare");
+      directory = Directory("${directory.path}");
     } else {
-      directory = Directory("${directory.path}${Platform.pathSeparator}FileShare");
+      directory = Directory("${directory.path}${Platform.pathSeparator}");
     }
 
     try {
