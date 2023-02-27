@@ -116,7 +116,7 @@ class FileMethods {
     if (box.get('directoryPath') == null) {
       switch (Platform.operatingSystem) {
         case "android":
-          var temp = Directory('/storage/emulated/0/Download/');
+          var temp = Directory('/storage/emulated/0/Download');
           (await temp.exists())
               ? directory = temp
               : directory = (await getDownloadsDirectory())!;

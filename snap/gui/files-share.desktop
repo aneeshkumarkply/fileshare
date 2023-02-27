@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=File Share Across every Platform
-Comment=Super Cool App that does everything
-Exec=file-share
-Icon=${SNAP}/meta/gui/file-share.png # replace name to your app name
-Terminal=false
-Type=Application
-Categories=Production; #adjust accordingly your snap category

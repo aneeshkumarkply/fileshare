@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=File Share Across every Platform
+Comment=File Share Across every Platform
+Exec=fileshare
+Icon=${SNAP}/meta/gui/fileshare.png
+Terminal=false
+Type=Application
+Categories=Production;

@@ -58,7 +58,7 @@ class _ReceivePageState extends State<ReceivePage> {
       );
 
       _bannerAd.load();
-    }
+
 
     _ad = NativeAd(
       adUnitId: AdHelper.nativeAdUnitId,
@@ -103,6 +103,7 @@ class _ReceivePageState extends State<ReceivePage> {
     );
 
     _ad1.load();
+  }
   }
 
   @override
@@ -183,7 +184,7 @@ class _ReceivePageState extends State<ReceivePage> {
                                 : MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Align(
+                              if (_isBannerAdReady)  Align(
                                 alignment: Alignment.topCenter,
 
                                 child: Container(
@@ -428,7 +429,7 @@ class _ReceivePageState extends State<ReceivePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Align(
+                                if (_isBannerAdReady)  Align(
                                   alignment: Alignment.topCenter,
 
                                   child: Container(
