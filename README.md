@@ -96,7 +96,7 @@ flutter run
 
 ## Author
 
-👤 **Abhilash Hegde**
+👤 **Aneesh Kumar S**
 
 * Twitter: [@aneeshkumarkply](https://twitter.com/aneeshkumarkply)
 
