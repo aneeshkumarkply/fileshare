@@ -11,7 +11,7 @@ tar:
 		&& cp -r $(BUNDLE_DIR)/* $(TEMP_DIR)\
 		&& cp linux/fileshare.desktop $(TEMP_DIR)\
 		&& cp assets/images/icon.png $(TEMP_DIR)\
-		&& cp linux/com.github.abhi16180.fileshare.appdata.xml $(TEMP_DIR)\
+		&& cp linux/com.github.aneeshkumarkply.fileshare.appdata.xml $(TEMP_DIR)\
 		&& tar -cJf build/FileShare-linux-x86_64.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
 

@@ -5,6 +5,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:fileshare/methods/share_intent.dart';
@@ -23,7 +24,11 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 final nav = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Hive.init((await getApplicationDocumentsDirectory()).path);
+
+ // final suppDir = await getApplicationSupportDirectory();
+//  Hive.init(suppDir.path);
+  await Hive.initFlutter();
+  //Hive.init((await getApplicationDocumentsDirectory()).path);
   await Hive.openBox('appData');
   Box box = Hive.box('appData');
   box.get('avatarPath') ?? box.put('avatarPath', 'assets/avatars/1.png');
