@@ -149,10 +149,10 @@ class _SharePageState extends State<SharePage> {
                   Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                              Lottie.asset(
-                                'assets/lottie/share.json',
-                                width: 240,
-                              ),
+                            //  Lottie.asset(
+                            //    'assets/lottie/share.json',
+                             //   width: 240,
+                             // ),
                               SizedBox(
                                 width: width / 8,
                               ),
@@ -184,16 +184,17 @@ class _SharePageState extends State<SharePage> {
                               child: AdWidget(ad: _ad),
                             ),
                           ),]),
-                          Lottie.asset(
-                            'assets/lottie/share.json',
-                          ),
+                        //  Lottie.asset(
+                         //   'assets/lottie/share.json',
+                        //  ),
                           SizedBox(
-                            width: 100,
-                            height: 100,
+                            width: 200,
+                            height: 200,
                             child: QrImage(
-                              foregroundColor: Colors.white,
+                              size: 150,
+                              foregroundColor: Colors.black,
                               data: FileShareSender.getFileShareLink,
-                              backgroundColor: Colors.black,
+                              backgroundColor: Colors.white,
                             ),
                           )
                         },

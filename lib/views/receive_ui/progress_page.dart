@@ -159,8 +159,9 @@ class _ProgressPageState extends State<ProgressPage> {
                               // width: _bannerAd.size.width.toDouble(),
                               // height: _bannerAd.size.height.toDouble(),
                               // child: AdWidget(ad: _bannerAd),
+                              alignment: Alignment.topCenter,
                               height: size.height / 6,
-                              width: size.width / 1.1,
+                              width: size.width / 1.01,
                               child: AdWidget(ad: _ad),
                             ),
                           ),]

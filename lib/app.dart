@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,14 +30,16 @@ class _AppState extends State<App> {
   String? appVersion;
   AppUpdateInfo? _updateInfo;
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
+
   Future<void> ImmediateUpdate() async {
     //if (kIsWeb) {
     if (const LocalPlatform().isAndroid) {
       InAppUpdate.checkForUpdate().then((info) {
         if (info.updateAvailability == UpdateAvailability.updateAvailable) {
           if (info.immediateUpdateAllowed) {
-            InAppUpdate.performImmediateUpdate().then((value) {}).catchError((
-                e) {
+            InAppUpdate.performImmediateUpdate()
+                .then((value) {})
+                .catchError((e) {
               showSnack(e.toString());
             });
           }
@@ -48,14 +51,12 @@ class _AppState extends State<App> {
     }
   }
 
-
   void showSnack(String text) {
     if (_scaffoldKey.currentContext != null) {
       ScaffoldMessenger.of(_scaffoldKey.currentContext!)
           .showSnackBar(SnackBar(content: Text(text)));
     }
   }
-
 
   @override
   void initState() {
@@ -71,8 +72,8 @@ class _AppState extends State<App> {
     });
   }
 
-
   Box box = Hive.box('appData');
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -211,57 +212,63 @@ class _AppState extends State<App> {
                           },
                           title: const Text('Privacy policy'),
                         ),*/
-                        ListTile(
-                          title: const Text('More App'),
-                          leading: Icon(UniconsLine.info_circle,
-                              color: mode.isDark ? null : Colors.black),
-                          onTap: () async {
-                            if (const LocalPlatform().isAndroid) {
-                              final devID = 'Aneesh Kumar S';
-                              final market = 'market://dev?id=$devID';
-                              final url =
-                                  'https://play.google.com/store/apps/developer?id=$devID';
-                              if (await canLaunch(market)) {
-                                await launch(market);
-                              } else if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            }
-                            ;
-                          },
-                        ),
-                        ListTile(
-                          title: const Text('Share App'),
-                          leading: Icon(UniconsLine.info_circle,
-                              color: mode.isDark ? null : Colors.black),
-                          onTap: () {if (const LocalPlatform().isAndroid) {
-        Share.share(
-        "https://play.google.com/store/apps/details?id=com.tripleafoodies.fileshare");
-        };}
-                        ),
-                        ListTile(
-                          title: const Text('Rate App'),
-                          leading: Icon(UniconsLine.info_circle,
-                              color: mode.isDark ? null : Colors.black),
-                          onTap: () async {
-                            if (const LocalPlatform().isAndroid) {
-                              final appID = 'com.tripleafoodies.fileshare';
-                              final market = 'market://details?id=$appID';
-                              final url = 'https://play.google.com/store/apps/details?id=$appID';
-                              if (await canLaunchUrl(Uri.parse(market))) {
-                                await launchUrl(Uri.parse(market));
-                              } else if (await canLaunchUrl(Uri.parse(url))) {
-                                await launchUrl(Uri.parse(url));
-                              } else {
-                                throw 'Could not launch $url';
+                        if (defaultTargetPlatform == TargetPlatform.android)
+                          ListTile(
+                            title: const Text('More App'),
+                            leading: Icon(UniconsLine.info_circle,
+                                color: mode.isDark ? null : Colors.black),
+                            onTap: () async {
+                              if (const LocalPlatform().isAndroid) {
+                                final devID = 'Aneesh Kumar S';
+                                final market = 'market://dev?id=$devID';
+                                final url =
+                                    'https://play.google.com/store/apps/developer?id=$devID';
+                                if (await canLaunch(market)) {
+                                  await launch(market);
+                                } else if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
                               }
                               ;
-                            }
-                            ;
-                          },
-                        ),
+                            },
+                          ),
+                        if (defaultTargetPlatform == TargetPlatform.android)
+                          ListTile(
+                              title: const Text('Share App'),
+                              leading: Icon(UniconsLine.info_circle,
+                                  color: mode.isDark ? null : Colors.black),
+                              onTap: () {
+                                if (const LocalPlatform().isAndroid) {
+                                  Share.share(
+                                      "https://play.google.com/store/apps/details?id=com.tripleafoodies.fileshare");
+                                }
+                                ;
+                              }),
+                        if (defaultTargetPlatform == TargetPlatform.android)
+                          ListTile(
+                            title: const Text('Rate App'),
+                            leading: Icon(UniconsLine.info_circle,
+                                color: mode.isDark ? null : Colors.black),
+                            onTap: () async {
+                              if (const LocalPlatform().isAndroid) {
+                                final appID = 'com.tripleafoodies.fileshare';
+                                final market = 'market://details?id=$appID';
+                                final url =
+                                    'https://play.google.com/store/apps/details?id=$appID';
+                                if (await canLaunchUrl(Uri.parse(market))) {
+                                  await launchUrl(Uri.parse(market));
+                                } else if (await canLaunchUrl(Uri.parse(url))) {
+                                  await launchUrl(Uri.parse(url));
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                                ;
+                              }
+                              ;
+                            },
+                          ),
                         ListTile(
                           title: const Text('About'),
                           leading: Icon(UniconsLine.info_circle,
