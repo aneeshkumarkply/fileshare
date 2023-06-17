@@ -25,6 +25,7 @@ class _IntroPageState extends State<IntroPage> {
   TextEditingController usernameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    
     return SafeArea(
       child: ValueListenableBuilder(
           valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,

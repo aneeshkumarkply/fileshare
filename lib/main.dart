@@ -3,6 +3,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -79,7 +80,11 @@ void main() async {
           ? AdaptiveThemeMode.dark
           : AdaptiveThemeMode.light,
       builder: (theme, dark) {
-        return MaterialApp(
+        return Shortcuts(
+          shortcuts: <LogicalKeySet, Intent>{
+            LogicalKeySet(LogicalKeyboardKey.select): ActivateIntent(),
+          },
+        child : MaterialApp(
           navigatorKey: nav,
           debugShowCheckedModeBanner: false,
           theme: theme,
@@ -101,6 +106,7 @@ void main() async {
             '/history': (context) => const HistoryPage(),
             '/apps': ((context) => const AppsList()),
           },
+        )
         );
       }));
 }

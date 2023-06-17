@@ -18,6 +18,14 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:targetApi="donut" />
+    <uses-feature android:name="android.software.leanback"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.faketouch"
+        android:required="false"/>
+
+
    <application
         android:label="FileShare"
         android:requestLegacyExternalStorage="true"
@@ -29,6 +37,7 @@
            />
         <activity
             android:name=".MainActivity"
+            android:banner="@drawable/banner"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
@@ -48,6 +57,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
 
 
@@ -95,6 +105,12 @@
             </intent-filter>
             <!-- sharing intent -->
         </activity>
+
+
+
+
+
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

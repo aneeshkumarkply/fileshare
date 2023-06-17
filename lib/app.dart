@@ -78,7 +78,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-    return ValueListenableBuilder(
+    return  ValueListenableBuilder(
       key: _scaffoldKey,
       valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
       builder: (_, AdaptiveThemeMode mode, child) {
