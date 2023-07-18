@@ -103,6 +103,7 @@ class _SharePageState extends State<SharePage> {
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     Size size = MediaQuery.of(context).size;
+
     return WillPopScope(
       child: ValueListenableBuilder(
           valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
@@ -159,7 +160,7 @@ class _SharePageState extends State<SharePage> {
                               SizedBox(
                                 width: width > 720 ? 200 : 100,
                                 height: width > 720 ? 200 : 100,
-                                child: QrImage(
+                                child: QrImageView(
                                   size: 150,
                                   foregroundColor: Colors.black,
                                   data: FileShareSender.getFileShareLink,
@@ -190,7 +191,7 @@ class _SharePageState extends State<SharePage> {
                           SizedBox(
                             width: 200,
                             height: 200,
-                            child: QrImage(
+                            child: QrImageView(
                               size: 150,
                               foregroundColor: Colors.black,
                               data: FileShareSender.getFileShareLink,
