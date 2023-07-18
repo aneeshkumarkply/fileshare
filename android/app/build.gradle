@@ -82,6 +82,10 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.google.android.gms:play-services-ads:21.4.0'
+    implementation 'com.google.android.gms:play-services-ads:22.2.0'
+    implementation 'androidx.leanback:leanback:1.0.0'
+
+
+
 
 }
