@@ -8,12 +8,9 @@ import 'package:is_tv/is_tv.dart';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../components/platform.dart';
 import '../../controllers/ad_helper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -180,7 +177,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                     child: InkWell(
                       onTap: () async {
                         if (Platform.isAndroid) {
-                          if (_isTV) {
+                          /*  if (_isTV) {
                             setState(() {
                               isLoading = true;
                             });
@@ -189,7 +186,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                               isLoading = false;
                             });
                           }
-                          else {
+                          else {*/
                             showModalBottomSheet(
                                 context: context,
                                 builder: (context) {
@@ -332,7 +329,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                     ],
                                   );
                                 });
-                          }
+                         // }
                         } else {
                           setState(() {
                             isLoading = true;

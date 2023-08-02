@@ -12,6 +12,8 @@ import 'package:fileshare/components/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import "package:permission_handler/permission_handler.dart";
 
+import 'package:is_tv/is_tv.dart';
+
 class IntroPage extends StatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
@@ -20,9 +22,26 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> {
+  bool _isTV = false;
   List<bool> selected = List.generate(4, (index) => false);
   Box box = Hive.box('appData');
   TextEditingController usernameController = TextEditingController();
+
+  Future<void> initPlatformState() async {
+    bool isTV = await IsTV().check().catchError((_) => false) ?? false;
+
+    setState(() {
+      _isTV = isTV;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    initPlatformState();
+
+  }
   @override
   Widget build(BuildContext context) {
     
@@ -132,39 +151,87 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   List<PageViewModel> getPages() {
-    List<PageViewModel> pages = [
-      PageViewModel(
-        titleWidget: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
-          child: Image.asset(
-            'assets/images/icon.png',
-            width: 128,
-            height: 128,
+    if (_isTV) {
+      List<PageViewModel> pages = [
+        PageViewModel(
+          titleWidget: Padding(
+            padding: const EdgeInsets.only(top: 1.0),
+            child: Image.asset(
+              'assets/images/icon.png',
+              width: 100,
+              height: 100,
+            ),
+          ),
+          bodyWidget: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Card(
+                child: Container(
+                  height: 180,
+                  margin: const EdgeInsets.only(top: 20),
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width / 1.2,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.wifi_rounded, size: 60),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Welcome to FileShare ,\n Transfer files seamlessly across your devices.\n(No internet connection is required)',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width > 720
+                                    ? 18
+                                    : 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
-        bodyWidget: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 72.0),
+        PageViewModel(
+          titleWidget: Padding(
+              padding: const EdgeInsets.only(top: 18.0),
+              child: Lottie.asset('assets/lottie/wifi_intro.json',
+                  width: 180, height: 180)),
+          bodyWidget: Center(
             child: Card(
               child: Container(
-                height: 200,
-                margin: const EdgeInsets.only(top: 60),
-                width: MediaQuery.of(context).size.width / 1.2,
+                height: 150,
+                margin: const EdgeInsets.only(top: 10),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 1.2,
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Icon(Icons.wifi_rounded, size: 60),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          'Welcome to FileShare ,\n Transfer files seamlessly across your devices.\n(No internet connection is required)',
+                          'Before using make sure that,\nSender and receivers are connected to same wifi router \n OR \n Connected via mobile-hotspot\n',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width > 720
-                                  ? 18
-                                  : 16),
+                            fontSize:
+                            MediaQuery
+                                .of(context)
+                                .size
+                                .width > 720 ? 18 : 16,
+                          ),
                         ),
                       ),
                     ],
@@ -174,110 +241,264 @@ class _IntroPageState extends State<IntroPage> {
             ),
           ),
         ),
-      ),
-      PageViewModel(
-        titleWidget: Padding(
-            padding: const EdgeInsets.only(top: 18.0),
-            child: Lottie.asset('assets/lottie/wifi_intro.json',
-                width: 200, height: 200)),
-        bodyWidget: Center(
-          child: Card(
-            child: Container(
-              height: 200,
-              margin: const EdgeInsets.only(top: 60),
-              width: MediaQuery.of(context).size.width / 1.2,
+        /*PageViewModel(
+          title: 'One last step, Select avatar',
+          bodyWidget: Center(
+            child: SizedBox(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 1.2,
               child: Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Before using make sure that,\nSender and receivers are connected to same wifi router \n OR \n Connected via mobile-hotspot\n',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize:
-                              MediaQuery.of(context).size.width > 720 ? 18 : 16,
-                        ),
+                    SizedBox(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 2.2,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 2.4,
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: 4,
+                        gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 1.2, crossAxisCount: 2),
+                        itemBuilder: ((context, index) =>
+                            Card(
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      selected.fillRange(0, 4, false);
+                                      selected[index] = true;
+                                      box.put('avatarPath',
+                                          'assets/avatars/${index + 1}.png');
+                                    });
+                                  },
+                                  child: Card(
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Image.asset(
+                                            'assets/avatars/${index + 1}.png'),
+                                        if (selected[index]) ...{
+                                          Positioned(
+                                            top: 5,
+                                            right: 5,
+                                            child: SvgPicture.asset(
+                                              'assets/icons/right_mark.svg',
+                                              color: Colors.white,
+                                              width: 30,
+                                            ),
+                                          )
+                                        }
+                                      ],
+                                    ),
+                                  ),
+                                ))),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 1.4,
+                        child: TextFormField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                              hintText: 'Set your username here'),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
             ),
           ),
-        ),
-      ),
-      PageViewModel(
-        title: 'One last step, Select avatar',
-        bodyWidget: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width / 1.2,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 2.2,
-                    width: MediaQuery.of(context).size.height / 2.4,
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      itemCount: 4,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 1.2, crossAxisCount: 2),
-                      itemBuilder: ((context, index) => Card(
-                              child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selected.fillRange(0, 4, false);
-                                selected[index] = true;
-                                box.put('avatarPath',
-                                    'assets/avatars/${index + 1}.png');
-                              });
-                            },
-                            child: Card(
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.asset(
-                                      'assets/avatars/${index + 1}.png'),
-                                  if (selected[index]) ...{
-                                    Positioned(
-                                      top: 5,
-                                      right: 5,
-                                      child: SvgPicture.asset(
-                                        'assets/icons/right_mark.svg',
-                                        color: Colors.white,
-                                        width: 30,
-                                      ),
-                                    )
-                                  }
-                                ],
-                              ),
-                            ),
-                          ))),
+        )*/
+      ];
+      return pages;
+    }
+    else {
+      List<PageViewModel> pages = [
+        PageViewModel(
+          titleWidget: Padding(
+            padding: const EdgeInsets.only(top: 18.0),
+            child: Image.asset(
+              'assets/images/icon.png',
+              width: 128,
+              height: 128,
+            ),
+          ),
+          bodyWidget: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 72.0),
+              child: Card(
+                child: Container(
+                  height: 200,
+                  margin: const EdgeInsets.only(top: 60),
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width / 1.2,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.wifi_rounded, size: 60),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Welcome to FileShare ,\n Transfer files seamlessly across your devices.\n(No internet connection is required)',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width > 720
+                                    ? 18
+                                    : 16),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.4,
-                      child: TextFormField(
-                        controller: usernameController,
-                        decoration: const InputDecoration(
-                            hintText: 'Set your username here'),
-                      ),
-                    ),
-                  )
-                ],
+                ),
               ),
             ),
           ),
         ),
-      )
-    ];
-    return pages;
+        PageViewModel(
+          titleWidget: Padding(
+              padding: const EdgeInsets.only(top: 18.0),
+              child: Lottie.asset('assets/lottie/wifi_intro.json',
+                  width: 200, height: 200)),
+          bodyWidget: Center(
+            child: Card(
+              child: Container(
+                height: 200,
+                margin: const EdgeInsets.only(top: 60),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width / 1.2,
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Before using make sure that,\nSender and receivers are connected to same wifi router \n OR \n Connected via mobile-hotspot\n',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize:
+                            MediaQuery
+                                .of(context)
+                                .size
+                                .width > 720 ? 18 : 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        PageViewModel(
+          title: 'One last step, Select avatar',
+          bodyWidget: Center(
+            child: SizedBox(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width / 1.2,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 2.2,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 2.4,
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        itemCount: 4,
+                        gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            childAspectRatio: 1.2, crossAxisCount: 2),
+                        itemBuilder: ((context, index) =>
+                            Card(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      selected.fillRange(0, 4, false);
+                                      selected[index] = true;
+                                      box.put('avatarPath',
+                                          'assets/avatars/${index + 1}.png');
+                                    });
+                                  },
+                                  child: Card(
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Image.asset(
+                                            'assets/avatars/${index + 1}.png'),
+                                        if (selected[index]) ...{
+                                          Positioned(
+                                            top: 5,
+                                            right: 5,
+                                            child: SvgPicture.asset(
+                                              'assets/icons/right_mark.svg',
+                                              color: Colors.white,
+                                              width: 30,
+                                            ),
+                                          )
+                                        }
+                                      ],
+                                    ),
+                                  ),
+                                ))),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 1.4,
+                        child: TextFormField(
+                          controller: usernameController,
+                          decoration: const InputDecoration(
+                              hintText: 'Set your username here'),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
+      ];
+
+      return pages;
+    }
   }
 }

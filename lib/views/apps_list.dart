@@ -129,6 +129,7 @@ class _AppsListState extends State<AppsList> {
         },
         label: const Text('Share'),
         icon: const Icon(UniconsLine.share),
+        autofocus:true,
       ),
     );
   }
