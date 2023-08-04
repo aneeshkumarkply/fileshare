@@ -17,6 +17,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform/platform.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:in_app_update/in_app_update.dart';
+import 'package:is_tv/is_tv.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -26,6 +27,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  bool _isTV = false;
   TextEditingController usernameController = TextEditingController();
   String? appVersion;
   AppUpdateInfo? _updateInfo;
@@ -33,7 +35,13 @@ class _AppState extends State<App> {
 
   Future<void> ImmediateUpdate() async {
     //if (kIsWeb) {
+    bool isTV = await IsTV().check().catchError((_) => false) ?? false;
     if (const LocalPlatform().isAndroid) {
+      if (isTV){
+
+      }
+      else
+        {
       InAppUpdate.checkForUpdate().then((info) {
         if (info.updateAvailability == UpdateAvailability.updateAvailable) {
           if (info.immediateUpdateAllowed) {
@@ -47,7 +55,7 @@ class _AppState extends State<App> {
       }).catchError((e) {
         showSnack(e.toString());
       });
-      // }
+       }
     }
   }
 
@@ -58,11 +66,13 @@ class _AppState extends State<App> {
     }
   }
 
+
+
   @override
   void initState() {
     main();
     super.initState();
-    ImmediateUpdate();
+        ImmediateUpdate();
   }
 
   Future<void> main() async {

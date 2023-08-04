@@ -20,6 +20,9 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32"
         tools:targetApi="donut" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" tools:replace="required" />
+
     <uses-feature android:name="android.software.leanback"
         android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen"
@@ -28,8 +31,7 @@
         android:required="false"/>
     <uses-feature android:name="android.hardware.telephony"
         android:required="false"/>
-    <uses-feature android:name="android.hardware.camera"
-        android:required="false"/>
+
     <uses-feature android:name="android.hardware.nfc"
         android:required="false"/>
     <uses-feature android:name="android.hardware.location.gps"
