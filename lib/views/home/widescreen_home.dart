@@ -167,15 +167,33 @@ class _WidescreenHomeState extends State<WidescreenHome> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-                  Card(
+            MaterialButton(
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(15),
+              ),
+              focusColor:mode.isDark
+                  ? const Color.fromARGB(
+                  100, 250, 120, 200)
+                  : Colors.green,
+              color: mode.isDark
+                  ? const Color.fromARGB(
+                  205, 117, 255, 122)
+                  : Colors.blue,
+
+                 /* Card(
+                    shadowColor: mode.isDark
+                        ? const Color.fromARGB(100, 100,200, 200)
+                        : const Color.fromARGB(255, 241, 241, 241),
                     color: mode.isDark
                         ? const Color.fromARGB(255, 18, 23, 26)
                         : const Color.fromARGB(255, 241, 241, 241),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: InkWell(
-                      onTap: () async {
+                    ),*/
+                   // child: InkWell(
+                    //  onTap: ()
+                    onPressed: () async {
                         if (Platform.isAndroid) {
                           /*  if (_isTV) {
                             setState(() {
@@ -208,6 +226,10 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                               .size
                                               .width /
                                               2,
+                                          focusColor:mode.isDark
+                                              ? const Color.fromARGB(
+                                              100, 250, 120, 200)
+                                              : Colors.green,
                                           color: mode.isDark
                                               ? const Color.fromARGB(
                                               205, 117, 255, 122)
@@ -256,6 +278,10 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                               .size
                                               .width /
                                               2,
+                                          focusColor:mode.isDark
+                                              ? const Color.fromARGB(
+                                              100, 250, 120, 200)
+                                              : Colors.green,
                                           color: mode.isDark
                                               ? const Color.fromARGB(
                                               205, 117, 255, 122)
@@ -360,19 +386,34 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                           )
                         ],
                       ),
-                    ),
+                    //),
                   ),
                   SizedBox(
                     width: size.width / 10,
                   ),
-                  Card(
+          MaterialButton(
+          shape: RoundedRectangleBorder(
+          borderRadius:
+          BorderRadius.circular(15),
+          ),
+          focusColor:mode.isDark
+          ? const Color.fromARGB(
+          100, 250, 120, 200)
+              : Colors.green,
+          color: mode.isDark
+          ? const Color.fromARGB(
+          205, 117, 255, 122)
+              : Colors.blue,
+
+                /*  Card(
                     color: mode.isDark
                         ? const Color.fromARGB(255, 18, 23, 26)
                         : const Color.fromARGB(255, 241, 241, 241),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(28)),
-                    child: InkWell(
-                      onTap: () {
+                        borderRadius: BorderRadius.circular(28)),*/
+                   // child: InkWell(
+                   //   onTap: ()
+                        onPressed: (){
                         if (Platform.isAndroid || Platform.isIOS) {
                           if (_isTV) {
           Navigator.of(context).pushNamed('/receivepage');
@@ -458,7 +499,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                           )
                         ],
                       ),
-                    ),
+                    //),
                   ),
                 ])} else ...{
                   Center(
