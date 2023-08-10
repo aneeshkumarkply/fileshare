@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:fileshare/components/snackbar.dart';
 import 'package:fileshare/controllers/controllers.dart';
 import 'package:fileshare/services/fileshare_receiver.dart';
+import 'package:is_tv/is_tv.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:open_file/open_file.dart';
@@ -33,6 +34,7 @@ class ProgressPage extends StatefulWidget {
 }
 
 class _ProgressPageState extends State<ProgressPage> {
+  bool _isTV = false;
   StopWatchTimer stopWatchTimer = StopWatchTimer();
   bool willPop = false;
   bool isDownloaded = false;
@@ -44,9 +46,19 @@ class _ProgressPageState extends State<ProgressPage> {
 
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
+
+  Future<void> initPlatformState() async {
+    bool isTV = await IsTV().check().catchError((_) => false) ?? false;
+
+    setState(() {
+      _isTV = isTV;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     generatePercentageList(widget.senderModel!.filesCount);
     FileShareReceiver.receive(widget.senderModel!, widget.secretCode);
     stopWatchTimer.onStartTimer();
@@ -112,6 +124,16 @@ class _ProgressPageState extends State<ProgressPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (_isTV) {
+      setState(() {
+        _isBannerAdReady = false;
+      });
+      print("isAndroidTVyes");
+      print(_isTV);
+      print(_isBannerAdReady);
+    }
+
     Size size = MediaQuery.of(context).size;
     var getInstance = GetIt.I<PercentageController>();
     var width = MediaQuery.of(context).size.width > 720

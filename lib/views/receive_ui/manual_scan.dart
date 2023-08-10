@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:is_tv/is_tv.dart';
 import '../../controllers/ad_helper.dart';
 import 'package:lottie/lottie.dart';
 import 'package:fileshare/components/components.dart';
@@ -24,6 +25,7 @@ class ReceivePage extends StatefulWidget {
 }
 
 class _ReceivePageState extends State<ReceivePage> {
+  bool _isTV = false;
   late Directory dir;
   // TODO: Add _bannerAd
   late BannerAd _bannerAd;
@@ -31,9 +33,19 @@ class _ReceivePageState extends State<ReceivePage> {
   late  NativeAd _ad1;
   // TODO: Add _isBannerAdReady
   bool _isBannerAdReady = false;
+
+  Future<void> initPlatformState() async {
+    bool isTV = await IsTV().check().catchError((_) => false) ?? false;
+
+    setState(() {
+      _isTV = isTV;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     //_showBannerAd();
     // myBanner.load();
     if (Platform.isAndroid || Platform.isIOS) {
@@ -133,6 +145,14 @@ class _ReceivePageState extends State<ReceivePage> {
   late StateSetter sts;
   @override
   Widget build(BuildContext context) {
+    if (_isTV) {
+      setState(() {
+        _isBannerAdReady = false;
+      });
+      print("isAndroidTVyes");
+      print(_isTV);
+      print(_isBannerAdReady);
+    }
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     bool isRequestSent = false;
